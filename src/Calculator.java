@@ -11,7 +11,8 @@ public class Calculator {
             if (scanner.hasNextLine()) {
                    if (scanner.hasNextInt()) {
                         num1 = scanner.nextInt();
-                    } else if(scanner.next().contains(Convert.getKey())){
+                    } else if(scanner.next().contains(Convert.getKey()))  //в этой строке не принимает getKey
+                   {
                         num1 = Convert.valueOf(scanner.next()).getValue();               }
                     else {
                        System.out.println("НЕВЕРНОЕ ЧИСЛО");
