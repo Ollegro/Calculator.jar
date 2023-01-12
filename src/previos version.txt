@@ -1,0 +1,105 @@
+/*
+этот калькулятор вводит сначала два числа через пробел, а потом просит ввести тип действия
+*/
+
+import java.io.IOException;
+import java.util.Scanner;
+public class Calculator {
+       static Scanner scanner = new Scanner(System.in).useDelimiter("\\s");
+    public static void main (String[]args) throws IOException {
+        while (true) {
+            System.out.println("main : Введите два числа от 0 до 10 арабских или римских от I до X");
+            int num1 = putInt();
+            int num2 = putInt();
+            char operation = getOperation();
+            int result = calculator(num1, num2, operation);
+            System.out.println("main : Результат операции: " + result + ". Конец программы" + "\n");
+        }
+    } ///////////////////// это конец main
+    public static char getOperation () { // метод для получения типа действия
+        System.out.println("getOperation : Введите + или - или / или * ");
+        gameOver();
+        char operation;
+        if (scanner.hasNext()) {
+            operation = scanner.next().charAt(0);
+        } else {
+            System.out.println("Вы допустили ошибку при вводе операции. Попробуйте еще раз.");
+            scanner.next();
+            operation = getOperation();
+        }
+        return operation;
+    }
+    public static int putInt () throws IOException { // метод для подготовки значений для ввода
+        gameOver();
+        int operand ;
+        int arabic = 0;
+        String roman;
+        if (scanner.hasNextInt()) {
+            arabic = scanner.nextInt();
+        } else if (scanner.hasNext()) {
+            roman = scanner.next();
+            arabic = romanMethod(roman);
+        }
+        if (arabic >= 0 && arabic <= 10) {
+            operand = arabic;
+        } else {
+            System.out.println("putInt : Число должно быть от 0 до 10! Будьте внимательнее, введите заново");
+            operand = putInt();
+        }
+        return operand;
+    }
+    public static int romanMethod (String roman) throws IOException { // метод конвертирует из римских в арабские
+        for (int i = 0; i < EnumClass.values().length; i++) {
+            if (EnumClass.values()[i].name().equalsIgnoreCase(roman)) {
+                return EnumClass.values()[i].getValue();
+            }
+            if (i == EnumClass.values().length - 1) {
+                System.out.println("ronanMethod : Вы ввели не допустимое число");
+                throw new IOException();
+            }
+        }
+        return 0;
+    }
+    public static int calculator ( int num1, int num2, char operation){ // метод производит расчет операций
+        int result;
+        switch (operation) {
+            case '+' -> result = num1 + num2;
+            case '-' -> result = num1 - num2;
+            case '*' -> result = num1 * num2;
+            case '/' -> result = num1 / num2;
+            default -> {
+                System.out.println("calculator : Операция не распознана. Повторите ввод.");
+                result = calculator(num1, num2, getOperation());
+            }
+        }
+        return result;
+    }
+    public static void gameOver() {
+        if (scanner.hasNext("q")) {
+            System.out.println("gameOver : завершение при вводе символа \"q\"");
+            scanner.close();
+            System.exit(0);
+        }
+    }
+}
+
+///////////////////////////// next ENUM class
+public enum EnumClass {
+    I( 1), II( 2), III( 3),
+    IV( 4),
+    V( 5), VI( 6), VII( 7),
+    VIII( 8), IX( 9), X( 10);
+        EnumClass( int value) {
+        this.value = value;    }
+    private final int value;
+    public int getValue() {
+        return value;
+    }
+   } //////////////////// это пследняя скобка
+
+
+
+
+
+
+
