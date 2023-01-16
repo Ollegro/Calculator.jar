@@ -25,9 +25,7 @@ public class Calculator {
             String result = result(numArabic1, numArabic2, math);  // арифметическое действие
             output = result;
         } else {
-            //int arabicNumberLeft = fromRomanToArabic(num1);   // из римских цифр в арабские через массив
-            //int arabicNumberRight = fromRomanToArabic(num2);  // из римских цифр в арабские через массив
-            int arabCharLeft = romanMethod(num1);   // из римских цифр в арабские через ENUM
+           int arabCharLeft = romanMethod(num1);   // из римских цифр в арабские через ENUM
             int arabCharRight = romanMethod(num2);  // из римских цифр в арабские через ENUM
             String result = result(arabCharLeft, arabCharRight, math); // арифметическое действие
             output = fromArabicToRoman(Integer.parseInt(result));   // из арабских в римские при вводе римских для получени результата
@@ -50,22 +48,18 @@ public class Calculator {
                 break;
             }
         }
-
         for (int i = 3; i >= 0; i--) {                  // проходим массив с конца+
             if (input.lastIndexOf(array[i]) > -1) {    // последнее вхождение
                 k = i;
                 break;
             }
         }
-
         if ((j != k) || (input.indexOf(array[j])) != (input.lastIndexOf(array[k]))) {
             throw new IllegalArgumentException("Допустимо только одно арифметическое действие");
         }
-
         if (symb == " ") {
             throw new IllegalArgumentException("Нет допустимого арифметического действия");
         }
-
         return symb;
     }
     // обработка ввода значений в консоли
