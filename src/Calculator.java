@@ -4,7 +4,7 @@ public class Calculator {
     public static void main(String[] args) {
         while (true) {
 
-            System.out.println("main : Введите два числа от 0 до 10 арабских или римских от I до X");
+            System.out.println("main : Введите число 1-10 или I-X, знак операции, второе число");
             String input = keyboard.nextLine();
             //gameOver();
             System.out.println(calculator(input));
