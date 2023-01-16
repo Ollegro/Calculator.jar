@@ -5,14 +5,12 @@ public class Calculator {
         while (true) {
 
             System.out.println("main : Введите число 1-10 или I-X, знак операции, второе число");
+            System.out.println("main : 'q' - game over ");
             String input = keyboard.nextLine();
-            //gameOver();
             System.out.println(calculator(input));
         }
     }
     public static String calculator(String input) {
-        //gameOver();
-
         String output = "";
         String math = operator(input);  //Определяем математическое действие
         String num1 = numbers(input, math, 0);   //  разбиваем строку на два числа(String)+убираем пробелы
@@ -190,6 +188,5 @@ public class Calculator {
         System.out.println("gameOver : завершение при вводе символа \"q\"");
         keyboard.close();
         System.exit(0);
-
     }
 }
