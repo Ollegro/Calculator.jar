@@ -1,192 +1,131 @@
-import java.util.Scanner;
+import java.util.*;
+
 public class Calculator {
-    static Scanner keyboard = new Scanner(System.in);
+    private static final Scanner keyboard = new Scanner(System.in);
+
     public static void main(String[] args) {
         while (true) {
+            System.out.println("Введите выражение (например: 1 + 5, либо X * III):");
+            System.out.println("Для выхода введите 'q'");
+            String input = keyboard.nextLine().trim();
 
-            System.out.println("main : Введите число 1-10 или I-X, знак операции, второе число");
-            System.out.println("main : 'q' - game over ");
-            String input = keyboard.nextLine();
-            System.out.println(calculator(input));
-        }
-    }
-    public static String calculator(String input) {
-        String output = "";
-        String math = operator(input);  //Определяем математическое действие
-        String num1 = numbers(input, math, 0);   //  разбиваем строку на два числа(String)+убираем пробелы
-        String num2 = numbers(input, math, 1);   //  разбиваем строку на два числа(String)+убираем пробелы
-        boolean control = isArabic(num1, num2);   //проверка на арабские цифры
-
-        if (control == true) {
-            int numArabic1 = Integer.parseInt(num1);//Преобразуем строку в цифру
-            int numArabic2 = Integer.parseInt(num2); // Преобразуем строку в цифру
-            String result = result(numArabic1, numArabic2, math);  // арифметическое действие
-            output = result;
-        } else {
-           int arabCharLeft = romanMethod(num1);   // из римских цифр в арабские через ENUM
-            int arabCharRight = romanMethod(num2);  // из римских цифр в арабские через ENUM
-            String result = result(arabCharLeft, arabCharRight, math); // арифметическое действие
-            output = fromArabicToRoman(Integer.parseInt(result));   // из арабских в римские при вводе римских для получени результата
-        }
-        return output;
-    }
-    // определение арифм действия
-    static String operator(String input) {
-        String[] array = {"+", "-", "*", "/"};
-        String symb = " ";
-        int j = 0;
-        int k = 0;
-
-        for (int i = 0; i < 4; i++) {
-            if(input.contains("q")){
-                gameOver();
-            }else if (input.indexOf(array[i]) > -1) {    // определяем первое вхождение символа из массива в строку
-                symb = array[i];
-                j = i;
+            if (input.equalsIgnoreCase("q")) {
+                System.out.println("Завершение программы.");
                 break;
             }
-        }
-        for (int i = 3; i >= 0; i--) {                  // проходим массив с конца+
-            if (input.lastIndexOf(array[i]) > -1) {    // последнее вхождение
-                k = i;
-                break;
+
+            try {
+                System.out.println("Результат: " + calculate(input));
+            } catch (Exception e) {
+                System.out.println("Ошибка: " + e.getMessage());
             }
         }
-        if ((j != k) || (input.indexOf(array[j])) != (input.lastIndexOf(array[k]))) {
-            throw new IllegalArgumentException("Допустимо только одно арифметическое действие");
-        }
-        if (symb == " ") {
-            throw new IllegalArgumentException("Нет допустимого арифметического действия");
-        }
-        return symb;
-    }
-    // обработка ввода значений в консоли
-    static String numbers(String input, String math, int leftOrRight) {
-
-        if (math == "+") {
-            math = "\\+";
-        }
-        // "борьба" с метасимволами + и *
-        // для корректной работы split()
-        if (math == "*") {
-            math = "\\*";
-        }
-        String[] number = input.split(math);
-        number[leftOrRight] = number[leftOrRight].trim();
-        return number[leftOrRight];
-    }
-    // выполнение действия , получение result
-    static String result(int num1, int num2, String math) {
-        int z = 0;
-        if (((num1 > 10) || (num1 < 1)) || ((num2 > 10) || (num2 < 1))) {
-            throw new IllegalArgumentException("Число(а) не входят в промежуток[1;10]");
-        }
-        switch (math) {
-            case "+":
-                z = num1 + num2;
-                break;
-
-            case "-":
-                z = num1 - num2;
-                break;
-
-            case "*":
-                z = num1 * num2;
-                break;
-
-            case "/":
-                z = num1 / num2;
-                break;
-        }
-
-        String text = ("" + z);
-        return text;
-    }
-    // проверка системы счисления если арабские цифры
-    static boolean isArabic(String numberLeft, String numberRight) {      // проверка системы счисления
-                boolean arabicLeft;
-        boolean arabicRight ;
-        boolean isArabic = false;
-        try {                                                        // проверка левого числа
-            Integer.parseInt(numberLeft);
-            arabicLeft = true;
-        } catch (java.lang.NumberFormatException ex) {
-            arabicLeft = false;
-        }
-        try {                                                         // проверка правого числа
-            Integer.parseInt(numberRight);
-            arabicRight = true;
-        } catch (NumberFormatException ex2) {
-            arabicRight = false;
-        }
-        if (arabicLeft != arabicRight) {
-            throw new IllegalArgumentException(" Нельзя вводить и арабские и римские цифры");
-        }
-        if (arabicLeft == true) {
-            isArabic = true;
-        }
-        return isArabic;
-    }
-    //    перевод из арабских в римские для вывожа результата в римских
-    static String fromArabicToRoman(int arabic) {
-        StringBuilder roman = new StringBuilder();
-        if (arabic < 1) {
-            throw new IllegalArgumentException(arabic + " Не бывает арабских цифр меньше 1");
-        }
-        while (arabic == 100) {
-            roman = new StringBuilder("C");
-            arabic -= 100;
-        }
-        while (arabic >= 90) {
-            roman.append("XC");
-            arabic -= 90;
-        }
-        while (arabic >= 50) {
-            roman.append("L");
-            arabic -= 50;
-        }
-        while (arabic >= 40) {
-            roman.append("XL");
-            arabic -= 40;
-        }
-        while (arabic >= 10) {
-            roman.append("X");
-            arabic -= 10;
-        }
-        while (arabic >= 9) {
-            roman.append("IX");
-            arabic -= 9;
-        }
-        while (arabic >= 5) {
-            roman.append("V");
-            arabic -= 5;
-        }
-        while (arabic >= 4) {
-            roman.append("IV");
-            arabic -= 4;
-        }
-        while (arabic >= 1) {
-            roman.append("I");
-            arabic -= 1;
-        }
-        return roman.toString();
-    }
-    // перевод из римских в арабские
-    public static int romanMethod(String roman)  {
-        for (int i = 0; i < EnumClass.values().length; i++) {
-            if (EnumClass.values()[i].name().equalsIgnoreCase(roman)) {
-                return EnumClass.values()[i].getValue();
-            }
-            if (i == EnumClass.values().length - 1) {
-                System.out.println("ronanMethod : Вы ввели не допустимое число");
-
-            }
-        }
-        return 0;
-    }
-    public static void gameOver() {
-        System.out.println("gameOver : завершение при вводе символа \"q\"");
         keyboard.close();
-        System.exit(0);
     }
+
+    public static String calculate(String input) {
+        String operator = findOperator(input);
+        String[] operands = input.split("\\s*" + escapeOperator(operator) + "\\s*");
+
+        if (operands.length != 2) {
+            throw new IllegalArgumentException("Некорректный ввод. Убедитесь, что вы ввели два числа и оператор.");
+        }
+
+        String num1 = operands[0].trim();
+        String num2 = operands[1].trim();
+        boolean isArabic = isArabicSystem(num1, num2);
+
+        if (isArabic) {
+            int operand1 = parseArabic(num1);
+            int operand2 = parseArabic(num2);
+            int result = performOperation(operand1, operand2, operator);
+            return String.valueOf(result);
+        } else {
+            int operand1 = romanToArabic(num1);
+            int operand2 = romanToArabic(num2);
+            int result = performOperation(operand1, operand2, operator);
+            return arabicToRoman(result);
+        }
+    }
+
+    private static String findOperator(String input) {
+        List<String> operators = Arrays.asList("+", "-", "*", "/");
+        return operators.stream()
+                .filter(input::contains)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Оператор не найден или отсутствует."));
+    }
+
+    private static String escapeOperator(String operator) {
+        return operator.equals("+") || operator.equals("*") ? "\\" + operator : operator;
+    }
+
+    private static boolean isArabicSystem(String num1, String num2) {
+        boolean isNum1Arabic = isArabic(num1);
+        boolean isNum2Arabic = isArabic(num2);
+
+        if (isNum1Arabic != isNum2Arabic) {
+            throw new IllegalArgumentException("Нельзя смешивать арабские и римские числа.");
+        }
+
+        return isNum1Arabic;
+    }
+
+    private static boolean isArabic(String num) {
+        try {
+            Integer.parseInt(num);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    private static int parseArabic(String num) {
+        return Integer.parseInt(num);
+    }
+
+    static int romanToArabic(String roman) {
+        try {
+            return Roman.valueOf(roman.toUpperCase()).getValue();
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Некорректное римское число: " + roman);
+        }
+
+    }
+
+    static String arabicToRoman(int num) {
+        if (num < 1) {
+            throw new IllegalArgumentException("Результат не может быть меньше 1 для римских чисел.");
+        }
+
+        StringBuilder result = new StringBuilder();
+        for (Roman roman : Roman.values()) {
+            while (num >= roman.getValue()) {
+                result.append(roman.name());
+                num -= roman.getValue();
+            }
+        }
+        return result.toString();
+    }
+
+    static int performOperation(int num1, int num2, String operator) {
+        if (operator.equals("/") && num2 == 0) {
+            throw new ArithmeticException("Деление на ноль невозможно.");
+        }
+
+        if (num1 < 1 || num1 > 100 || num2 < 1 || num2 > 100) {
+            throw new IllegalArgumentException("Число должно быть в диапазоне от 1 до 100.");
+        }
+
+        return switch (operator) {
+            case "+" -> num1 + num2;
+            case "-" -> num1 - num2;
+            case "*" -> num1 * num2;
+            case "/" -> num1 / num2;
+            default -> throw new IllegalArgumentException("Неизвестный оператор: " + operator);
+        };
+    }
+
+
+
 }
